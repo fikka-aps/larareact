@@ -13,7 +13,7 @@ function ProgramListItem({program, onDeleteClick}) {
         >
         </div>
         <div className='flex justify-between items-center mt-3'>
-            <TButton to={`programs/${program.id}`}>
+            <TButton to={`/programs/${program.id}`}>
                 <PencilIcon className='w-5 h-5 mr-2' />
                 Edit
             </TButton>
@@ -23,7 +23,7 @@ function ProgramListItem({program, onDeleteClick}) {
                 </TButton>
 
                 {program.id && (
-                    <TButton onClick={onDeleteClick} circle link color="red">
+                    <TButton onClick={ev => onDeleteClick(program.id)} circle link color="red">
                         <TrashIcon className='w-5 h-5' />
                     </TButton>
                 )}

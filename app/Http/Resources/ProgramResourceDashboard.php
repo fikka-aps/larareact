@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\URL;
 
-class ProgramResource extends JsonResource
+class ProgramResourceDashboard extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,15 +17,14 @@ class ProgramResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'image_url' => $this->image ? URL::to($this->image) : null,
             'title' => $this->title,
             'slug' => $this->slug,
-            'image_url' => $this->image ? URL::to($this->image) : null,
             'status' => !!$this->status,
-            'description' => $this->description,
             'created_at' => $this->created_at->format('Y-m-d H:i:s'),
-            'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
-            'expire_date' => (new \DateTime($this->expire_date))->format('Y-m-d'),
-            'questions' => ProgramQuestionResource::collection($this->questions)
+            'expire_date' => $this->expire_date,
+            'questions' => $this->questions()->count(),
+            'answers' => $this->answers()->count()
         ];
     }
 }

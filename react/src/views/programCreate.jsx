@@ -1,13 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PageComponent from '../components/PageComponent';
-import { PhotoIcon } from '@heroicons/react/24/outline';
+import { LinkIcon, PhotoIcon, TrashIcon } from '@heroicons/react/24/outline';
 import axiosClient from '../axios';
 import TButton from '../components/core/TButton';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import ProgramQuestions from '../components/ProgramQuestions';
+import { useStateContext } from '../context/ContextProvider';
 
 function ProgramCreate() {
+    const { showToast } = useStateContext();
     const navigate = useNavigate();
+    const { id } = useParams();
     const [program, setProgram] = useState({
         title: "",
         slug: "",
@@ -17,7 +20,8 @@ function ProgramCreate() {
         image_url: null,
         expire_date: "",
         questions: [],
-    })
+    });
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
     const onImageChoose = (ev) => {
@@ -44,14 +48,25 @@ function ProgramCreate() {
         }
         delete payload.image_url;
 
-        axiosClient.post('/program', payload)
-        .then(res => {
+        let res = null;
+        if (id) {
+            res = axiosClient.put(`/program/${id}`, payload);
+        } else {
+            res = axiosClient.post("/program", payload);
+        }
+        res
+        .then((res) => {
             console.log(res);
-            navigate('/programs')
+            navigate("/programs");
+            if (id) {
+            showToast("The program was updated");
+            } else {
+            showToast("The program was created");
+            }
         })
         .catch((err) => {
             if (err && err.response) {
-              setError(err.response.data.message);
+            setError(err.response.data.message);
             }
             console.log(err, err.response);
         });
@@ -65,21 +80,48 @@ function ProgramCreate() {
     }
 
     const addQuestion = () => {
-        survey.questions.push({
+        program.questions.push({
           id: uuidv4(),
           type: "text",
           question: "",
           description: "",
           data: {},
         });
-        setSurvey({ ...survey });
+        setProgram({ ...program });
     };
     
       const onDelete = () => {
     
     }
+
+    useEffect(() => {
+        if (id) {
+          setLoading(true);
+          axiosClient.get(`/program/${id}`).then(({ data }) => {
+            setProgram(data.data);
+            setLoading(false);
+          });
+        }
+    }, []);
   return (
-    <PageComponent title="Create New Program">
+    <PageComponent 
+        title={!id ? "Create New Program" : "Update Program"}
+        buttons={
+            <div className='flex gap-2'>
+            <TButton color='green' href={`/programs/public/${program.slug}`}>
+                <LinkIcon className='h-4 w-4 mr-2' />
+                Public Link
+            </TButton>
+            <TButton color='red' onClick={onDelete}>
+                <TrashIcon className='h-4 w-4 mr-2' />
+                Delete
+            </TButton>
+            </div>
+        }
+        
+        >
+        {loading && <div className='text-lg text-center'>Loading...</div>}
+        {!loading &&
         <form action="#" method="POST" onSubmit={onSubmit}>
             <div className="shadow sm:overflow-hidden sm:rounded-md">
                 <div className="space-y-6 bg-white px-4 py-5 sm:p-6">
@@ -223,6 +265,7 @@ function ProgramCreate() {
                     </div>
                 </div>
         </form>
+        }
     </PageComponent>
   );
 }

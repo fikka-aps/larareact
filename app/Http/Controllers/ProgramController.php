@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\QuestionTypeEnum;
+use App\Http\Requests\StoreProgramAnswerRequest;
 use App\Http\Requests\StoreProgramRequest;
 use App\Http\Requests\UpdateProgramRequest;
 use App\Http\Resources\ProgramResource;
@@ -32,7 +33,7 @@ class ProgramController extends Controller
         return ProgramResource::collection(
             Program::where('user_id', $user->id)
                 ->orderBy('created_at', 'desc')
-                ->paginate(10)
+                ->paginate(3)
         );
     }
 
@@ -235,7 +236,7 @@ class ProgramController extends Controller
             $data['data'] = json_encode($data['data']);
         }
         $validator = Validator::make($data, [
-            'id' => 'exists:App\Models\SurveyQuestion,id',
+            'id' => 'exists:App\Models\ProgramQuestion,id',
             'question' => 'required|string',
             'type' => ['required', new Enum(QuestionTypeEnum::class)],
             'description' => 'nullable|string',
@@ -245,46 +246,46 @@ class ProgramController extends Controller
         return $question->update($validator->validated());
     }
 
-    // public function getBySlug(Program $program)
-    // {
-    //     if (!$program->status) {
-    //         return response("", 404);
-    //     }
+    public function getBySlug(Program $program)
+    {
+        if (!$program->status) {
+            return response("", 404);
+        }
 
-    //     $currentDate = new \DateTime();
-    //     $expireDate = new \DateTime($program->expire_date);
-    //     if ($currentDate > $expireDate) {
-    //         return response("", 404);
-    //     }
+        $currentDate = new \DateTime();
+        $expireDate = new \DateTime($program->expire_date);
+        if ($currentDate > $expireDate) {
+            return response("", 404);
+        }
 
-    //     return new ProgramResource($program);
-    // }
+        return new ProgramResource($program);
+    }
 
-    // public function storeAnswer(StoreProgramAnswerRequest $request, Program $program)
-    // {
-    //     $validated = $request->validated();
+    public function storeAnswer(StoreProgramAnswerRequest $request, Program $program)
+    {
+        $validated = $request->validated();
 
-    //     $programAnswer = ProgramAnswer::create([
-    //         'program_id' => $program->id,
-    //         'start_date' => date('Y-m-d H:i:s'),
-    //         'end_date' => date('Y-m-d H:i:s'),
-    //     ]);
+        $programAnswer = ProgramAnswer::create([
+            'program_id' => $program->id,
+            'start_date' => date('Y-m-d H:i:s'),
+            'end_date' => date('Y-m-d H:i:s'),
+        ]);
 
-    //     foreach ($validated['answers'] as $questionId => $answer) {
-    //         $question = ProgramQuestion::where(['id' => $questionId, 'program_id' => $program->id])->get();
-    //         if (!$question) {
-    //             return response("Invalid question ID: \"$questionId\"", 400);
-    //         }
+        foreach ($validated['answers'] as $questionId => $answer) {
+            $question = ProgramQuestion::where(['id' => $questionId, 'program_id' => $program->id])->get();
+            if (!$question) {
+                return response("Invalid question ID: \"$questionId\"", 400);
+            }
 
-    //         $data = [
-    //             'program_question_id' => $questionId,
-    //             'program_answer_id' => $programAnswer->id,
-    //             'answer' => is_array($answer) ? json_encode($answer) : $answer
-    //         ];
+            $data = [
+                'program_question_id' => $questionId,
+                'program_answer_id' => $programAnswer->id,
+                'answer' => is_array($answer) ? json_encode($answer) : $answer
+            ];
 
-    //         $questionAnswer = ProgramQuestionAnswer::create($data);
-    //     }
+            $questionAnswer = ProgramQuestionAnswer::create($data);
+        }
 
-    //     return response("", 201);
-    // }
+        return response("", 201);
+    }
 }

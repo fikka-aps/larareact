@@ -8,4 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class ProgramAnswer extends Model
 {
     use HasFactory;
+
+    const CREATED_AT = null;
+    const UPDATED_AT = null;
+
+    protected $fillable = ['program_id', 'start_date', 'end_date'];
+
+    public function program()
+    {
+        return $this->belongsTo(Program::class);
+    }
 }

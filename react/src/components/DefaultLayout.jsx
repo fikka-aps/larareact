@@ -13,6 +13,9 @@ import { Link, NavLink, Navigate, Outlet } from 'react-router-dom'
 import { useStateContext } from '../context/ContextProvider'
 import axiosClient from '../axios'
 import { useEffect } from 'react'
+import Toast from './Toast'
+import ModalDialog from './ModalDialog'
+import Modal from './ModalDialog'
   
 //   const user = {
 //     name: 'Tom Cook',
@@ -183,7 +186,8 @@ import { useEffect } from 'react'
           </Disclosure>
 
           <Outlet />
-          
+          <Toast />
+          <Modal />
         </div>
       </>
     )

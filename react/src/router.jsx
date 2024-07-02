@@ -7,6 +7,7 @@ import Register from "./views/register";
 import NotFound from "./views/notfound";
 import Programs from "./views/programs";
 import ProgramCreate from "./views/programCreate";
+import ProgramPublicView from "./views/ProgramPublicView";
 
 const router = createBrowserRouter([
     {
@@ -28,6 +29,10 @@ const router = createBrowserRouter([
             {
                 path: '/programs/create',
                 element: <ProgramCreate />
+            },
+            {
+                path: '/programs/:id',
+                element: <ProgramCreate />
             }
         ]
     },
@@ -46,9 +51,13 @@ const router = createBrowserRouter([
         ]
     },
     {
+        path:'/programS/public/:slug',
+        element: <ProgramPublicView />
+    },
+    {
         path:'/*',
         element: <NotFound/>
-    }
+    },
 ])
 
 export default router;

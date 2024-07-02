@@ -4,6 +4,12 @@ const StateContext = createContext({
     currentUser: {},
     userToken: null,
     programs: [],
+    questionTypes: [],
+    toast: {
+      message: null,
+      show: false,
+    },
+    useModal : () => { },
     setCurrentUser: () => { },
     setUserToken: () => { }
 });
@@ -181,6 +187,35 @@ export const ContextProvider = ({ children }) => {
     const [userToken, _setUserToken] = useState(localStorage.getItem('TOKEN') || '');
     const [programs, setPrograms] = useState(tmpPrograms);
     const [questionTypes] = useState(['text', "select", "radio", "checkbox", "textarea"])
+    const [toast, setToast] = useState({message: '', show: false});
+    
+    //modal
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [modalMessage, setModalMessage] = useState('');
+    const [onConfirm, setOnConfirm] = useState(null);
+    const [modalType, setModalType] = useState('danger');
+    const [itemId, setItemId] = useState(null); 
+
+    const showModal = (message, confirmCallback, type = 'danger', id = null) => {
+      setModalMessage(message);
+      setOnConfirm(() => () => confirmCallback(id)); // Pass ID to callback
+      setModalType(type);
+      setItemId(id);
+      setIsModalOpen(true);
+    };
+
+    const hideModal = () => {
+      setIsModalOpen(false);
+      setOnConfirm(null);
+      setItemId(null);
+    };
+
+    const confirmModal = () => {
+      if (onConfirm) {
+        onConfirm();
+      }
+      hideModal();
+    };
 
     const setUserToken = (token) => {
         if (token) {
@@ -191,6 +226,13 @@ export const ContextProvider = ({ children }) => {
         _setUserToken(token);
     }
 
+    const showToast = (message) => {
+      setToast({ message, show: true })
+      setTimeout(() => {
+        setToast({message: '', show: false})
+      }, 5000)
+    }
+
 return (
         <StateContext.Provider
         value={{
@@ -199,10 +241,14 @@ return (
             userToken,
             setUserToken,
             programs,
-            questionTypes
+            questionTypes,
+            toast,
+            showToast,
+            isModalOpen, showModal, hideModal, confirmModal, modalMessage, modalType, itemId
+
         }}
         >
-            {children}
+          {children}
         </StateContext.Provider>
     )
 }
