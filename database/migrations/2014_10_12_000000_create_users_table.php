@@ -19,6 +19,9 @@ return new class extends Migration
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
+
+            // Menambahkan kolom role dengan tipe enum
+            $table->enum('role', ['admin', 'user'])->default('user');
         });
     }
 

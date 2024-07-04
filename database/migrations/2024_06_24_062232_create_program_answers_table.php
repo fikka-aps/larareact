@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('program_answers', function (Blueprint $table) {
             $table->id();
+            $table->foreignIdFor(\App\Models\User::class, 'user_id');
             $table->foreignIdFor(\App\Models\Program::class, 'program_id');
             $table->timestamp('start_date')->nullable();
             $table->timestamp('end_date')->nullable();

@@ -23,9 +23,10 @@ Route::middleware('auth:sanctum', 'throttle:60,1')->group(function() {
     Route::apiResource('program', ProgramController::class);
 
     Route::get('/dashboard', [DashboardController::class, 'index']);
+    Route::post('/program/{program}/answer', [ProgramController::class, 'storeAnswer']);
 });
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/program/get-by-slug/{program:slug}', [ProgramController::class, 'getBySlug']);
-Route::post('/program/{program}/answer', [ProgramController::class, 'storeAnswer']);
+

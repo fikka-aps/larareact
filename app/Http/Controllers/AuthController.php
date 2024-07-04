@@ -42,10 +42,19 @@ class AuthController extends Controller
         $user = Auth::user();
         $token = $user->createToken('main')->plainTextToken;
 
-        return response([
-            'user' => $user,
-            'token' => $token
-        ]);
+        if ($user->role === 'admin') {
+            return response([
+                'user' => $user,
+                'token' => $token,
+                'redirect_to' => 'dashboard'
+            ]);
+        } elseif ($user->role === 'user') {
+            return response([
+                'user' => $user,
+                'token' => $token,
+                'redirect_to' => 'user'
+            ]);
+        }
     }
 
     public function logout(Request $request)

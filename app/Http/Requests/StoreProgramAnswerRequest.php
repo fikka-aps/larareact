@@ -13,6 +13,12 @@ class StoreProgramAnswerRequest extends FormRequest
     {
         return true;
     }
+    protected function prepareForValidation()
+    {
+        $this->merge([
+            'user_id' => $this->user()->id
+        ]);
+    }
 
     /**
      * Get the validation rules that apply to the request.
@@ -22,7 +28,8 @@ class StoreProgramAnswerRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'answers' => 'required|array'
+            'user_id' => 'exists:users,id',
+            'answers' => 'required|array',
         ];
     }
 }

@@ -11,6 +11,7 @@ use App\Models\Program;
 use App\Models\ProgramAnswer;
 use App\Models\ProgramQuestion;
 use App\Models\ProgramQuestionAnswer;
+use App\Models\User;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
@@ -31,8 +32,7 @@ class ProgramController extends Controller
         $user = $request->user();
 
         return ProgramResource::collection(
-            Program::where('user_id', $user->id)
-                ->orderBy('created_at', 'desc')
+            Program::orderBy('created_at', 'desc')
                 ->paginate(3)
         );
     }
@@ -71,8 +71,8 @@ class ProgramController extends Controller
     public function show(Program $program, Request $request)
     {
         $user = $request->user();
-        if ($user->id !== $program->user_id) {
-            return abort(403, 'Unauthorize action');
+        if ($user->role !== 'admin') {
+            return abort(403, 'Forbidden');
         }
         return new ProgramResource($program);
     }
@@ -261,12 +261,20 @@ class ProgramController extends Controller
         return new ProgramResource($program);
     }
 
+    
+    /**
+     * Store a newly created resource in storage.
+     * @param  \App\Http\Requests\StoreProgramAnswerRequest  $request
+     * @return \Illuminate\Http\Response
+     */
     public function storeAnswer(StoreProgramAnswerRequest $request, Program $program)
     {
+        $user = $request->user();
         $validated = $request->validated();
 
         $programAnswer = ProgramAnswer::create([
             'program_id' => $program->id,
+            'user_id' => $user->id,
             'start_date' => date('Y-m-d H:i:s'),
             'end_date' => date('Y-m-d H:i:s'),
         ]);

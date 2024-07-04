@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PageComponent from '../components/PageComponent';
-import { LinkIcon, PhotoIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { LinkIcon, PaperAirplaneIcon, PhotoIcon, TrashIcon } from '@heroicons/react/24/outline';
 import axiosClient from '../axios';
 import TButton from '../components/core/TButton';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -106,8 +106,12 @@ function ProgramCreate() {
   return (
     <PageComponent 
         title={!id ? "Create New Program" : "Update Program"}
-        buttons={
+        buttons={id &&
             <div className='flex gap-2'>
+            <TButton color='indigo' href={`/programs/answer/${program.slug}`}>
+                <PaperAirplaneIcon className='h-4 w-4 mr-2' />
+                Program Answer
+            </TButton>
             <TButton color='green' href={`/programs/public/${program.slug}`}>
                 <LinkIcon className='h-4 w-4 mr-2' />
                 Public Link

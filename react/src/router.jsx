@@ -8,6 +8,8 @@ import NotFound from "./views/notfound";
 import Programs from "./views/programs";
 import ProgramCreate from "./views/programCreate";
 import ProgramPublicView from "./views/ProgramPublicView";
+import ProgramAnswer from "./views/programAnswer";
+import Home from "./views/home";
 
 const router = createBrowserRouter([
     {
@@ -17,6 +19,10 @@ const router = createBrowserRouter([
             {
                 path: '/',
                 element: <Dashboard/>
+            },
+            {
+                path: '/home',
+                element: <Home />
             },
             {
                 path: '/dashboard',
@@ -33,7 +39,11 @@ const router = createBrowserRouter([
             {
                 path: '/programs/:id',
                 element: <ProgramCreate />
-            }
+            },
+            {
+                path: '/programS/answer/:slug',
+                element: <ProgramAnswer />
+            },
         ]
     },
     {
