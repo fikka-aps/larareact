@@ -5,7 +5,7 @@ import axiosClient from "../axios";
 
 export default function Login() {
 
-    const { setCurrentUser, setUserToken } = useStateContext();
+    const { setCurrentUser, setUserToken, setUserRole, userRole } = useStateContext();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState({ __html: "" });
@@ -22,6 +22,15 @@ export default function Login() {
         .then(({ data }) => {
           setCurrentUser(data.user);
           setUserToken(data.token);
+          setUserRole(data.user.role);
+          // // Pengalihan berdasarkan peran pengguna
+          // if (data.user.role === 'admin') {
+          //   navigate('/dashboard');
+          // } else if (data.user.role === 'user') {
+          //   navigate('/home');
+          // } else {
+          //   navigate('/default'); // Jika peran tidak dikenali
+          // }
         })
         .catch((error) => {
           if (error.response) {

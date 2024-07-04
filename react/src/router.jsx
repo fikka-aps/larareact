@@ -10,6 +10,7 @@ import ProgramCreate from "./views/programCreate";
 import ProgramPublicView from "./views/ProgramPublicView";
 import ProgramAnswer from "./views/programAnswer";
 import Home from "./views/home";
+import UserLayout from "./components/UserLayout";
 
 const router = createBrowserRouter([
     {
@@ -19,10 +20,6 @@ const router = createBrowserRouter([
             {
                 path: '/',
                 element: <Dashboard/>
-            },
-            {
-                path: '/home',
-                element: <Home />
             },
             {
                 path: '/dashboard',

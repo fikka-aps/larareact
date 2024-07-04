@@ -3,10 +3,10 @@ import { Navigate, Outlet } from 'react-router-dom';
 import { useStateContext } from '../context/ContextProvider';
 
 function GuestLayout() {
-    const {userToken} = useStateContext();
+    const {userToken, userRole} = useStateContext();
 
     if(userToken){
-        return <Navigate to='/' />
+      return <Navigate to='/' />
     }
   return (
     <div>

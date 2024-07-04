@@ -184,6 +184,7 @@ const tmpPrograms = [
 
 export const ContextProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState({});
+    const [userRole, setUserRole] = useState(null);
     const [userToken, _setUserToken] = useState(localStorage.getItem('TOKEN') || '');
     const [programs, setPrograms] = useState(tmpPrograms);
     const [questionTypes] = useState(['text', "select", "radio", "checkbox", "textarea"])
@@ -244,6 +245,7 @@ return (
             questionTypes,
             toast,
             showToast,
+            userRole, setUserRole,
             isModalOpen, showModal, hideModal, confirmModal, modalMessage, modalType, itemId
 
         }}
