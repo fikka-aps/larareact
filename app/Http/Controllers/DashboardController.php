@@ -15,7 +15,7 @@ class DashboardController extends Controller
         $user = $request->user();
 
         // Total Number of Programs
-        $total = Program::query()->where('user_id', $user->id)->count();
+        $total = Program::query()->count();
 
         // Latest Program
         $latest = Program::query()->where('user_id', $user->id)->latest('created_at')->first();

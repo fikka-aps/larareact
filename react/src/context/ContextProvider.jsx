@@ -3,6 +3,7 @@ import { createContext, useContext, useState } from "react";
 const StateContext = createContext({
     currentUser: {},
     userToken: null,
+    userRole: null,
     programs: [],
     questionTypes: [],
     toast: {
@@ -11,7 +12,8 @@ const StateContext = createContext({
     },
     useModal : () => { },
     setCurrentUser: () => { },
-    setUserToken: () => { }
+    setUserToken: () => { },
+    setUserRole: () => { }
 });
 
 const tmpPrograms = [
@@ -184,7 +186,7 @@ const tmpPrograms = [
 
 export const ContextProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState({});
-    const [userRole, setUserRole] = useState(null);
+    const [userRole, _setUserRole] = useState(localStorage.getItem('ROLE') || '');
     const [userToken, _setUserToken] = useState(localStorage.getItem('TOKEN') || '');
     const [programs, setPrograms] = useState(tmpPrograms);
     const [questionTypes] = useState(['text', "select", "radio", "checkbox", "textarea"])
@@ -218,6 +220,14 @@ export const ContextProvider = ({ children }) => {
       hideModal();
     };
 
+    const setUserRole = (role) => {
+        if (role) {
+            localStorage.setItem('ROLE', role)
+        } else {
+            localStorage.removeItem('ROLE')
+        }
+        _setUserRole(role);
+    }
     const setUserToken = (token) => {
         if (token) {
             localStorage.setItem('TOKEN', token)

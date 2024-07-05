@@ -16,7 +16,7 @@ function Dashboard() {
       .then((res) => {
         setLoading(false);
         setData(res.data);
-        console.log(res.data);
+        // console.log(res.data);
         return res;
       })
       .catch((error) => {

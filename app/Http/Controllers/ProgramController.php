@@ -6,6 +6,7 @@ use App\Enums\QuestionTypeEnum;
 use App\Http\Requests\StoreProgramAnswerRequest;
 use App\Http\Requests\StoreProgramRequest;
 use App\Http\Requests\UpdateProgramRequest;
+use App\Http\Resources\ProgramAnswerResource;
 use App\Http\Resources\ProgramResource;
 use App\Models\Program;
 use App\Models\ProgramAnswer;
@@ -295,5 +296,15 @@ class ProgramController extends Controller
         }
 
         return response("", 201);
+    }
+    public function getAnswersByProgramId($programId)
+    {
+        $answers = ProgramAnswer::where('program_id', $programId)->get();
+
+        if ($answers->isEmpty()) {
+            return response("", 404);
+        }
+
+        return ProgramAnswerResource::collection($answers);
     }
 }

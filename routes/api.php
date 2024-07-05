@@ -23,6 +23,8 @@ Route::middleware('auth:sanctum', 'throttle:60,1')->group(function() {
     Route::apiResource('program', ProgramController::class);
 
     Route::get('/dashboard', [DashboardController::class, 'index']);
+    Route::get('/program/answer/{programId}', [ProgramController::class, 'getAnswersByProgramId']);
+
     Route::post('/program/{program}/answer', [ProgramController::class, 'storeAnswer']);
 });
 

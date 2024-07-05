@@ -1,23 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import AnswerTable from '../components/AnswerTable';
-import axiosClient from '../axios';
-import { useParams } from 'react-router-dom';
+import { useStateContext } from "../context/ContextProvider";
 
-function ProgramAnswer() {
-
-    const { id } = useParams();
-    const [loading, setLoading] =useState(false);
-    const [answers, setAnswers] =useState([]);
-    useEffect(() => {
-        if (id) {
-          setLoading(true);
-          axiosClient.get(`/program/answer/${id}`).then(({ data }) => {
-            setAnswers(data.data);
-            setLoading(false);
-          });
-        }
-    }, []);
-    console.log(answers)
+function AnswerTable({answer}) {
+    const {userRole} = useStateContext()
+    console.log(answer)
   return (
     <div className="relative overflow-x-auto">
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
@@ -52,28 +37,24 @@ function ProgramAnswer() {
                         $2999
                     </td>
                 </tr>
-                {answers.map(answer => (
-                    
-                    <tr key={answer.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                        <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            {answer.user_id}
-                        </th>
-                        <td className="px-6 py-4">
-                            {answer.program.title}
-                        </td>
-                        <td className="px-6 py-4">
-                            Laptop PC
-                        </td>
-                        <td className="px-6 py-4">
-                            $1999
-                        </td>
-                    </tr>
-                ))}
+                <tr key={answer.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                    <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                        {answer.user_id}
+                    </th>
+                    <td className="px-6 py-4">
+                        {answer.program}
+                    </td>
+                    <td className="px-6 py-4">
+                        Laptop PC
+                    </td>
+                    <td className="px-6 py-4">
+                        $1999
+                    </td>
+                </tr>
             </tbody>
         </table>
     </div>
-
   );
 }
 
-export default ProgramAnswer;
+export default AnswerTable;

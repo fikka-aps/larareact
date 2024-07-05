@@ -38,8 +38,18 @@ const router = createBrowserRouter([
                 element: <ProgramCreate />
             },
             {
-                path: '/programS/answer/:slug',
+                path: '/programS/answer/:id',
                 element: <ProgramAnswer />
+            },
+        ]
+    },
+    {
+        path:'/',
+        element: <UserLayout />,
+        children:[
+            {
+                path: '/home',
+                element: <Home />
             },
         ]
     },
@@ -63,6 +73,10 @@ const router = createBrowserRouter([
     },
     {
         path:'/*',
+        element: <NotFound/>
+    },
+    {
+        path:'/forbidden',
         element: <NotFound/>
     },
 ])

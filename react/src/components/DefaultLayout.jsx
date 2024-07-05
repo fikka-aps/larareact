@@ -37,10 +37,14 @@ import Modal from './ModalDialog'
   
   export default function DefaultLayout() {
 
-    const { currentUser, userRole, userToken, setCurrentUser, setUserToken } = useStateContext();
+    const { currentUser, userRole, setUserRole, userToken, setCurrentUser, setUserToken } = useStateContext();
+
 
     if (!userToken) {
         return <Navigate to='login' />
+    }
+    if (userRole !== 'admin'){
+      return <Navigate to='home' />
     }
 
 
@@ -50,6 +54,7 @@ import Modal from './ModalDialog'
         .then(res => {
           setCurrentUser({})
           setUserToken(null)
+          setUserRole(null)
         });
     }
 
@@ -103,6 +108,7 @@ import Modal from './ModalDialog'
                             <MenuButton className="relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                               <span className="absolute -inset-1.5" />
                               <span className="sr-only">Open user menu</span>
+                              <div className="text-base font-small leading-none text-white mr-1">{currentUser.name}</div>
                               <UserIcon className='w-8 h-8 p-2 text-white bg-black/25 rounded-full' />
                             </MenuButton>
                           </div>

@@ -18,7 +18,8 @@ class ProgramAnswerResource extends JsonResource
         return [
             'id' => $this->id,
             'program' => new ProgramResource($this->program),
-            'end_date' => $this->end_date
+            'end_date' => $this->end_date,
+            'user_id' => $this ->user_id
         ];
     }
 }
