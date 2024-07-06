@@ -13,6 +13,7 @@ function ProgramAnswer() {
           setLoading(true);
           axiosClient.get(`/program/answer/${id}`).then(({ data }) => {
             setAnswers(data.data);
+            console.log(data.data)
             setLoading(false);
           });
         }
@@ -30,39 +31,25 @@ function ProgramAnswer() {
                         Created at
                     </th>
                     <th scope="col" className="px-6 py-3">
-                        Answer
+                        Status
                     </th>
                     <th scope="col" className="px-6 py-3">
-                        Detail
+                        Action
                     </th>
                 </tr>
             </thead>
             <tbody>
-                <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                    <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                        Apple MacBook Pro 17"
-                    </th>
-                    <td className="px-6 py-4">
-                        Silver
-                    </td>
-                    <td className="px-6 py-4">
-                        Laptop
-                    </td>
-                    <td className="px-6 py-4">
-                        $2999
-                    </td>
-                </tr>
                 {answers.map(answer => (
                     
                     <tr key={answer.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                         <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            {answer.user_id}
+                            {answer.user.name}
                         </th>
                         <td className="px-6 py-4">
-                            {answer.program.title}
+                            {answer.created_at}
                         </td>
                         <td className="px-6 py-4">
-                            Laptop PC
+                            {answer.status}
                         </td>
                         <td className="px-6 py-4">
                             $1999

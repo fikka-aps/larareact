@@ -29,6 +29,7 @@ Route::middleware('auth:sanctum', 'throttle:60,1')->group(function() {
 });
 
 Route::post('/register', [AuthController::class, 'register']);
+Route::get('/verify-email/{token}', [AuthController::class, 'verifyEmail']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/program/get-by-slug/{program:slug}', [ProgramController::class, 'getBySlug']);
 

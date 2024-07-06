@@ -9,13 +9,17 @@ class ProgramAnswer extends Model
 {
     use HasFactory;
 
-    const CREATED_AT = null;
-    const UPDATED_AT = null;
+    
 
-    protected $fillable = ['program_id', 'user_id', 'start_date', 'end_date'];
+    protected $fillable = ['program_id', 'user_id', 'status'];
 
     public function program()
     {
         return $this->belongsTo(Program::class);
     }
+     // Define the relationship to the User model
+     public function user()
+     {
+         return $this->belongsTo(User::class);
+     }
 }

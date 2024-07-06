@@ -276,8 +276,7 @@ class ProgramController extends Controller
         $programAnswer = ProgramAnswer::create([
             'program_id' => $program->id,
             'user_id' => $user->id,
-            'start_date' => date('Y-m-d H:i:s'),
-            'end_date' => date('Y-m-d H:i:s'),
+            'status' => 'on Review'
         ]);
 
         foreach ($validated['answers'] as $questionId => $answer) {
@@ -299,7 +298,9 @@ class ProgramController extends Controller
     }
     public function getAnswersByProgramId($programId)
     {
-        $answers = ProgramAnswer::where('program_id', $programId)->get();
+        $answers = ProgramAnswer::where('program_id', $programId)
+        ->orderBy('created_at', 'desc')
+        ->get();
 
         if ($answers->isEmpty()) {
             return response("", 404);

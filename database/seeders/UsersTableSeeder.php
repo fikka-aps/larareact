@@ -17,7 +17,7 @@ class UsersTableSeeder extends Seeder
     public function run(): void
     {
         User::create([
-            'name' => 'Admin User',
+            'name' => 'Admin',
             'email' => 'admin@example.com',
             'email_verified_at' => now(),
             'password' => Hash::make('password'),

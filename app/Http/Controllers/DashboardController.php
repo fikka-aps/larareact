@@ -30,7 +30,7 @@ class DashboardController extends Controller
         $latestAnswers = ProgramAnswer::query()
             ->join('programs', 'program_answers.program_id', '=', 'programs.id')
             ->where('programs.user_id', $user->id)
-            ->orderBy('end_date', 'DESC')
+            ->orderBy('created_at', 'DESC')
             ->limit(5)
             ->getModels('program_answers.*');
 

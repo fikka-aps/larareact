@@ -18,8 +18,14 @@ class ProgramAnswerResource extends JsonResource
         return [
             'id' => $this->id,
             'program' => new ProgramResource($this->program),
-            'end_date' => $this->end_date,
-            'user_id' => $this ->user_id
+            'created_at' => $this->created_at->format('Y-m-d H:i:s'),
+            'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
+            'status' => $this->status,
+            'user' => [
+                'id' => $this->user->id,
+                'name' => $this->user->name,
+                'email' => $this->user->email,
+            ],
         ];
     }
 }

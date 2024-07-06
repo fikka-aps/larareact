@@ -11,11 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('program_answers', function (Blueprint $table) {
+        Schema::create('email_verifications', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(\App\Models\User::class, 'user_id');
-            $table->foreignIdFor(\App\Models\Program::class, 'program_id');
-            $table->string('status', 50);
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->string('token');
             $table->timestamps();
         });
     }
@@ -25,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('program_answers');
+        Schema::dropIfExists('email_verifications');
     }
 };

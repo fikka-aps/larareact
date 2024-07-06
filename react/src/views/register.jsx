@@ -4,12 +4,29 @@ import axiosClient from "../axios";
 import { useStateContext } from "../context/ContextProvider";
 
 export default function Register() {
-    const { setCurrentUser, setUserToken } = useStateContext();
+    const { setCurrentUser, setUserToken, setUserRole } = useStateContext();
     const [fullName, setFullName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [passwordConfirmation, setPasswordConfirmation] = useState("");
     const [error, setError] = useState({ __html: "" });
+    const [message, setMessage] = useState('');
+
+    const handleRegister = async (e) => {
+      e.preventDefault();
+      try {
+        const response = await axiosClient.post('/register', {
+          name : fullName,
+          email,
+          password,
+          password_confirmation: passwordConfirmation,
+        });
+        setMessage(response.data.message);
+      } catch (error) {
+        setMessage('Registration failed');
+        console.error(error)
+      }
+    };
 
     const onSubmit = (ev) => {
         ev.preventDefault();
@@ -26,7 +43,8 @@ export default function Register() {
           .then(({ data }) => {
             setCurrentUser(data.user)
             setUserToken(data.token)
-            // console.log(data)
+            setUserRole(data.user.role);
+            console.log(data)
           })
           .catch((error) => {
             if (error.response) {
@@ -39,6 +57,7 @@ export default function Register() {
       };
     return (
       <>
+        {message && <p>{message}</p>}
         <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
           <div className="sm:mx-auto sm:w-full sm:max-w-sm">
             <img
@@ -56,7 +75,7 @@ export default function Register() {
           {error.__html && (<div className="bg-red-500 rounded py-2 px-3 text-white" dangerouslySetInnerHTML={error}>
             </div>)}
           <form
-                onSubmit={onSubmit}
+                onSubmit={handleRegister}
                 className="mt-8 space-y-6"
                 action="#"
                 method="POST"
