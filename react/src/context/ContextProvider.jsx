@@ -189,7 +189,7 @@ export const ContextProvider = ({ children }) => {
     const [userRole, _setUserRole] = useState(localStorage.getItem('ROLE') || '');
     const [userToken, _setUserToken] = useState(localStorage.getItem('TOKEN') || '');
     const [programs, setPrograms] = useState(tmpPrograms);
-    const [questionTypes] = useState(['text', "select", "radio", "checkbox", "textarea"])
+    const [questionTypes] = useState(['text', "select", "radio", "checkbox", "textarea", "file"])
     const [toast, setToast] = useState({message: '', show: false});
     
     //modal

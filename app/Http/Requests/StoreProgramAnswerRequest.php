@@ -29,7 +29,8 @@ class StoreProgramAnswerRequest extends FormRequest
     {
         return [
             'user_id' => 'exists:users,id',
-            'answers' => 'required|array',
+            'answers' => 'array',
+            'answers.*' => 'nullable',
         ];
     }
 }

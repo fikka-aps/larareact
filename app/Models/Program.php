@@ -33,4 +33,16 @@ class Program extends Model
     {
         return $this->hasMany(ProgramAnswer::class);
     }
+
+    public function questionAnswers()
+    {
+        return $this->hasManyThrough(
+            ProgramQuestionAnswer::class,
+            ProgramQuestion::class,
+            'program_id', // Foreign key on ProgramQuestion table
+            'program_question_id', // Foreign key on ProgramQuestionAnswer table
+            'id', // Local key on Program table
+            'id'  // Local key on ProgramQuestion table
+        );
+    }
 }

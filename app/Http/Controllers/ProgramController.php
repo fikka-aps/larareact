@@ -7,7 +7,9 @@ use App\Http\Requests\StoreProgramAnswerRequest;
 use App\Http\Requests\StoreProgramRequest;
 use App\Http\Requests\UpdateProgramRequest;
 use App\Http\Resources\ProgramAnswerResource;
+use App\Http\Resources\ProgramQuestionResource;
 use App\Http\Resources\ProgramResource;
+use App\Http\Resources\QuestionAnswerResource;
 use App\Models\Program;
 use App\Models\ProgramAnswer;
 use App\Models\ProgramQuestion;
@@ -28,15 +30,21 @@ class ProgramController extends Controller
      * 
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request )
+    public function index(Request $request)
     {
         $user = $request->user();
-
-        return ProgramResource::collection(
-            Program::orderBy('created_at', 'desc')
-                ->paginate(3)
-        );
+        if ($user->role === "user") {
+            $program = Program::where('status', true)
+                ->orderBy('created_at', 'desc')
+                ->paginate(3);
+        } else {
+            $program = Program::orderBy('created_at', 'desc')
+                ->paginate(3);
+        }
+        
+        return ProgramResource::collection($program);
     }
+
 
     /**
      * Store a newly created resource in storage.
@@ -75,6 +83,11 @@ class ProgramController extends Controller
         if ($user->role !== 'admin') {
             return abort(403, 'Forbidden');
         }
+        $program->load([
+            'questions.questionAnswers',
+            'answers.questionAnswers',
+            'answers.user',
+        ]);
         return new ProgramResource($program);
     }
 
@@ -247,7 +260,7 @@ class ProgramController extends Controller
         return $question->update($validator->validated());
     }
 
-    public function getBySlug(Program $program)
+    public function getBySlug(Program $program, Request $request)
     {
         if (!$program->status) {
             return response("", 404);
@@ -258,8 +271,18 @@ class ProgramController extends Controller
         if ($currentDate > $expireDate) {
             return response("", 404);
         }
+        
+        $program->load(['questions.questionAnswers', 'questions', 'answers']);
+        $user = $request->user();
+        $userAnswer = ProgramAnswer::where('program_id', $program->id)
+                               ->where('user_id', $user->id)
+                               ->first();
 
-        return new ProgramResource($program);
+
+        return response([
+            'program' => new ProgramResource($program),
+            'user_answer' => $userAnswer ? true : false,
+        ]);
     }
 
     
@@ -269,43 +292,70 @@ class ProgramController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function storeAnswer(StoreProgramAnswerRequest $request, Program $program)
-    {
-        $user = $request->user();
-        $validated = $request->validated();
+{
+    $user = $request->user();
+    $validated = $request->validated();
 
-        $programAnswer = ProgramAnswer::create([
-            'program_id' => $program->id,
-            'user_id' => $user->id,
-            'status' => 'on Review'
-        ]);
+    $programAnswer = ProgramAnswer::create([
+        'program_id' => $program->id,
+        'user_id' => $user->id,
+        'status' => 'on Review'
+    ]);
 
-        foreach ($validated['answers'] as $questionId => $answer) {
-            $question = ProgramQuestion::where(['id' => $questionId, 'program_id' => $program->id])->get();
-            if (!$question) {
-                return response("Invalid question ID: \"$questionId\"", 400);
-            }
-
-            $data = [
-                'program_question_id' => $questionId,
-                'program_answer_id' => $programAnswer->id,
-                'answer' => is_array($answer) ? json_encode($answer) : $answer
-            ];
-
-            $questionAnswer = ProgramQuestionAnswer::create($data);
+    foreach ($validated['answers'] as $questionId => $answer) {
+        if ($request->hasFile("answers.$questionId")) {
+            $fileName = time() . '_' . $answer->getClientOriginalName();
+            $answer->move(public_path('uploads'), $fileName);
+            $answer = $fileName;
         }
-
-        return response("", 201);
+        ProgramQuestionAnswer::create([
+            'program_question_id' => $questionId,
+            'program_answer_id' => $programAnswer->id,
+            'answer' => $answer
+        ]);
     }
+
+    
+
+    // // Handle text answers
+    // foreach ($answers as $questionId => $answer) {
+    //     $question = ProgramQuestion::where(['id' => $questionId, 'program_id' => $program->id])->first();
+    //     if (!$question) {
+    //         return response()->json(["error" => "Invalid question ID: \"$questionId\""], 400);
+    //     }
+
+    //     // Save text answer data to database
+    //     ProgramQuestionAnswer::create([
+    //         'program_question_id' => $questionId,
+    //         'program_answer_id' => $programAnswer->id,
+    //         'answer' => $answer
+    //     ]);
+    // }
+
+    
+
+    return response("", 201);
+}
+
+
+
     public function getAnswersByProgramId($programId)
     {
-        $answers = ProgramAnswer::where('program_id', $programId)
-        ->orderBy('created_at', 'desc')
+        $program = Program::with(['answers.user', 'answers.questionAnswers.programQuestion'])
+                          ->findOrFail($programId);
+
+        return ProgramAnswerResource::collection($program->answers);
+    }
+    public function getAnswerQuestionbyAnswerId($answerId)
+    {
+        $questionAnswers = ProgramQuestionAnswer::where('program_answer_id', $answerId)
+        ->with('question', 'answer')
         ->get();
 
-        if ($answers->isEmpty()) {
+        if ($questionAnswers->isEmpty()) {
             return response("", 404);
         }
 
-        return ProgramAnswerResource::collection($answers);
+        return new QuestionAnswerResource($questionAnswers);
     }
 }

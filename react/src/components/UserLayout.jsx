@@ -40,10 +40,10 @@ import Modal from './ModalDialog'
     const { currentUser, userRole, setUserRole, userToken, setCurrentUser, setUserToken } = useStateContext();
   
     if (!userToken) {
-        return <Navigate to='login' />
+        return <Navigate to='/login' />
     }
     if (userRole !== 'user'){
-      return <Navigate to='dashboard' />
+      return <Navigate to='/admin/dashboard' />
     }
 
     const logout = (ev) => {

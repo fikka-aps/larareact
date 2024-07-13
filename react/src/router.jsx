@@ -12,45 +12,47 @@ import ProgramAnswer from "./views/programAnswer";
 import Home from "./views/home";
 import UserLayout from "./components/UserLayout";
 import VerifyEmail from "./components/VerifyEmail";
+import VerifyEmailSent from "./components/VerifyEmailSent";
+import LandingPage from "./views/landingPage";
 
 const router = createBrowserRouter([
     {
-        path: '/',
+        path: '/admin',
         element: <DefaultLayout/>,
         children: [
             {
-                path: '/',
+                path: 'dashboard',
                 element: <Dashboard/>
             },
             {
-                path: '/dashboard',
-                element: <Navigate to="/" />
-            },
-            {
-                path: '/programs',
+                path: 'programs',
                 element: <Programs />
             },
             {
-                path: '/programs/create',
+                path: 'programs/create',
                 element: <ProgramCreate />
             },
             {
-                path: '/programs/:id',
+                path: 'programs/:id',
                 element: <ProgramCreate />
             },
             {
-                path: '/programS/answer/:id',
+                path: 'programS/answer/:id',
                 element: <ProgramAnswer />
             },
         ]
     },
     {
-        path:'/',
+        path:'/user',
         element: <UserLayout />,
         children:[
             {
-                path: '/home',
+                path: 'home',
                 element: <Home />
+            },
+            {
+                path:'programS/public/:slug',
+                element: <ProgramPublicView />
             },
         ]
     },
@@ -59,6 +61,10 @@ const router = createBrowserRouter([
         element: <GuestLayout/>,
         children: [
             {
+                path: '/',
+                element: <LandingPage/>
+            },
+            {
                 path: '/login',
                 element: <Login/>
             },
@@ -66,16 +72,17 @@ const router = createBrowserRouter([
                 path: '/register',
                 element: <Register/>
             },
-            {
-                path: '/verify-email/:token',
-                element: <VerifyEmail/>
-            },
+            
             
         ]
     },
     {
-        path:'/programS/public/:slug',
-        element: <ProgramPublicView />
+        path: '/verify-email/:token',
+        element: <VerifyEmail/>
+    },
+    {
+        path:"/verify-email-sent",
+        element: <VerifyEmailSent />
     },
     {
         path:'/*',

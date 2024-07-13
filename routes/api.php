@@ -24,12 +24,14 @@ Route::middleware('auth:sanctum', 'throttle:60,1')->group(function() {
 
     Route::get('/dashboard', [DashboardController::class, 'index']);
     Route::get('/program/answer/{programId}', [ProgramController::class, 'getAnswersByProgramId']);
-
+    Route::get('/questionAnswer/{programAnswerId}', [ProgramController::class, 'getAnswerQuestionbyAnswerId']);
+    Route::get('/program/get-by-slug/{program:slug}', [ProgramController::class, 'getBySlug']);
     Route::post('/program/{program}/answer', [ProgramController::class, 'storeAnswer']);
 });
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::get('/verify-email/{token}', [AuthController::class, 'verifyEmail']);
 Route::post('/login', [AuthController::class, 'login']);
-Route::get('/program/get-by-slug/{program:slug}', [ProgramController::class, 'getBySlug']);
+Route::get('/publicProgram', [AuthController::class, 'getProgram']);
+
 

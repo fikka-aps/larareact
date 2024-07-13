@@ -57,7 +57,7 @@ function ProgramCreate() {
         res
         .then((res) => {
             console.log(res);
-            navigate("/programs");
+            navigate("/admin/programs");
             if (id) {
             showToast("The program was updated");
             } else {
@@ -108,13 +108,9 @@ function ProgramCreate() {
         title={!id ? "Create New Program" : "Update Program"}
         buttons={id &&
             <div className='flex gap-2'>
-            <TButton color='indigo' href={`/programs/answer/${program.id}`}>
+            <TButton color='indigo' to={`/programs/answer/${program.id}`}>
                 <PaperAirplaneIcon className='h-4 w-4 mr-2' />
                 Program Answer
-            </TButton>
-            <TButton color='green' href={`/programs/public/${program.slug}`}>
-                <LinkIcon className='h-4 w-4 mr-2' />
-                Public Link
             </TButton>
             <TButton color='red' onClick={onDelete}>
                 <TrashIcon className='h-4 w-4 mr-2' />

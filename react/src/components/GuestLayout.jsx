@@ -6,7 +6,7 @@ function GuestLayout() {
     const {userToken, userRole} = useStateContext();
 
     if(userToken){
-      return <Navigate to='/' />
+      return <Navigate to='/admin/dashboard' />
     }
   return (
     <div>

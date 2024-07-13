@@ -25,36 +25,14 @@ class VerifyEmail extends Mailable
         $this->token = $token;
     }
 
-    /**
-     * Get the message envelope.
-     */
-    public function envelope(): Envelope
+    public function build()
     {
-        return new Envelope(
-            subject: 'Verify Email',
-        );
-    }
-
-    /**
-     * Get the message content definition.
-     */
-    public function content(): Content
-    {
-        return new Content(
-            view: 'emails.verify',
-            with: [
-                'verificationUrl' => url("/verify-email/{$this->token}"),
-            ],
-        );
-    }
-
-    /**
-     * Get the attachments for the message.
-     *
-     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
-     */
-    public function attachments(): array
-    {
-        return [];
+        $frontendUrl = env('FRONTEND_URL', 'http://localhost:3000');
+        $verificationUrl = "{$frontendUrl}/verify-email/{$this->token}";
+        return $this->view('emails.verify')
+                ->with([
+                    'verificationUrl' => $verificationUrl,
+                ])
+                ->subject('Verify Email');
     }
 }

@@ -18,8 +18,12 @@ class ProgramAnswer extends Model
         return $this->belongsTo(Program::class);
     }
      // Define the relationship to the User model
-     public function user()
-     {
-         return $this->belongsTo(User::class);
-     }
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+    public function questionAnswers()
+    {
+        return $this->hasMany(ProgramQuestionAnswer::class);
+    }
 }

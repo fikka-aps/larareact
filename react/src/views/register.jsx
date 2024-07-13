@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axiosClient from "../axios";
 import { useStateContext } from "../context/ContextProvider";
 
@@ -11,9 +11,11 @@ export default function Register() {
     const [passwordConfirmation, setPasswordConfirmation] = useState("");
     const [error, setError] = useState({ __html: "" });
     const [message, setMessage] = useState('');
+    const navigate = useNavigate();
 
     const handleRegister = async (e) => {
       e.preventDefault();
+      setError({ __html: "" });
       try {
         const response = await axiosClient.post('/register', {
           name : fullName,
@@ -22,8 +24,14 @@ export default function Register() {
           password_confirmation: passwordConfirmation,
         });
         setMessage(response.data.message);
+        navigate('/verify-email-sent');
       } catch (error) {
         setMessage('Registration failed');
+        if (error.response) {
+          const finalErrors = Object.values(error.response.data.errors).reduce((accum, next) => [...accum, ...next], [])
+          console.log(finalErrors)
+          setError({__html: finalErrors.join('<br>')})
+        }
         console.error(error)
       }
     };

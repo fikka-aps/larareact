@@ -6,23 +6,23 @@ import { useStateContext } from '../context/ContextProvider';
 function ProgramListItem({program, onDeleteClick}) {
     const {userRole} = useStateContext()
   return (
-   <div className='flex flex-col py-4 px-6 shadow-md bg-white hover:bg-gray-50 h-[470px]'>
-        <img src={program.image_url} alt={program.title} className='w-full h-48 object-cover' />
+   <div className='flex flex-col py-4 px-6 shadow-md bg-white hover:bg-gray-50 h-[500px]'>
+        <img src={program.image_url} alt={program.title} className='w-full h-80 object-cover' />
         <h4 className='mt-4 text-lg font-bold'>{program.title}</h4>
         <div
         dangerouslySetInnerHTML={{__html: program.description}}
         className='overflow-hidden flex-1'
         >
         </div>
-        <div className='flex justify-between items-center mt-3'>
+        <div >
             {userRole==='admin' ? (
-                <div>
-                    <TButton to={`/programs/${program.id}`}>
+                <div className='flex justify-between items-center'>
+                    <TButton to={`/admin/programs/${program.id}`}>
                         <PencilIcon className='w-5 h-5 mr-2' />
                         Edit
                     </TButton>
                     <div className='flex items-center'>
-                        <TButton href={`/view/program/${program.slug}`} circle link>
+                        <TButton href={`/admin/programs/answer/${program.id}`} circle link>
                             <ArrowTopRightOnSquareIcon className='w-5 h-5' />
                         </TButton>
 
@@ -34,10 +34,9 @@ function ProgramListItem({program, onDeleteClick}) {
                     </div>
                 </div>
             ) : (
-                <div>
+                <div className='flex'>
                     {program.id && (
-                        <TButton to={`/programs/public/${program.slug}`}>
-                            <PencilIcon className='w-5 h-5 mr-2' />
+                        <TButton to={`/user/programs/public/${program.slug}`}>
                             Daftar
                         </TButton>
                     )}

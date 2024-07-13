@@ -26,6 +26,7 @@ class ProgramAnswerResource extends JsonResource
                 'name' => $this->user->name,
                 'email' => $this->user->email,
             ],
+            'question_answers' => ProgramQuestionAnswerResource::collection($this->whenLoaded('questionAnswers')),
         ];
     }
 }

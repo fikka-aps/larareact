@@ -1,16 +1,16 @@
-import { useState } from "react";
-import { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axiosClient from "../axios";
 import PublicQuestionView from "../components/PublicQuestionView";
 
 export default function ProgramPublicView() {
-  const answers = {};
+  const [answers, setAnswers] = useState({});
   const [programFinished, setProgramFinished] = useState(false);
   const [program, setProgram] = useState({
     questions: [],
   });
   const [loading, setLoading] = useState(false);
+  const [files, setFiles] = useState([]);
   const { slug } = useParams();
 
   useEffect(() => {
@@ -19,42 +19,109 @@ export default function ProgramPublicView() {
       .get(`program/get-by-slug/${slug}`)
       .then(({ data }) => {
         setLoading(false);
-        setProgram(data.data);
+        setProgram(data.program);
+        setProgramFinished(data.user_answer);
       })
       .catch(() => {
         setLoading(false);
       });
-  }, []);
+  }, [slug]);
 
-  function answerChanged(question, value) {
-    answers[question.id] = value;
-    console.log(question, value);
-  }
+  // function answerChanged(question, value) {
+  //   setAnswers((prevAnswers) => ({
+  //     ...prevAnswers,
+  //     [question.id]: value,
+  //   }));
+  // }
 
-  function onSubmit(ev) {
-    ev.preventDefault();
+  // function onFileChange(event, question) {
+  //   const selectedFiles = Array.from(event.target.files); // Ambil array dari file yang dipilih
+  //   selectedFiles.forEach((file) => {
+  //     // Menyimpan informasi file di dalam answers
+  //     answerChanged(question, {
+  //       ...answers[question.id],
+  //       file: file,
+  //     });
+  //   });
+  // }
 
-    console.log(answers);
-    axiosClient
-      .post(`/program/${program.id}/answer`, {
-        answers,
+  // function onSubmit(ev) {
+  //   ev.preventDefault();
+  //   const formData = new FormData();
+  //   Object.keys(answers).forEach((questionId) => {
+  //     const answer = answers[questionId];
+  //     formData.append(`answers[${questionId}]`, answer);
+      
+  //     if (answer.file) {
+  //       formData.append(`files[${questionId}]`, answer.file);
+  //     }
+  //   });
+    
+  //   // Debug: Log the FormData entries
+  //   console.log(Array.from(formData.entries()));
+  //   // debugger
+  //   // axiosClient
+  //   //   .post(`/program/${program.id}/answer`, formData, {
+  //   //     headers: {
+  //   //       "Content-Type": "multipart/form-data",
+  //   //     },
+  //   //   })
+  //   //   .then((response) => {
+  //   //     setProgramFinished(true);
+  //   //   })
+  //   //   .catch((error) => {
+  //   //     console.error("Error:", error);
+  //   //   });
+  // }
+
+  // const handleChange = (question, e) => {
+  //   if (!e || !e.target) {
+  //     console.error("Event or target is undefined");
+  //     return;
+  //   }
+    
+  //   const { value, files } = e.target;
+  //   answerChanged(question, files ? files[0] : value);
+  // };
+
+  const answerChanged = (question, value) => {
+    setAnswers((prevAnswers) => ({
+      ...prevAnswers,
+      [question.id]: value,
+    }));
+  };
+
+  
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const form = new FormData();
+    for (const key in answers) {
+      form.append(`answers[${key}]`, answers[key]);
+    }
+    // console.log(Array.from(form.entries()));
+
+    try {
+      await axiosClient.post(`/program/${program.id}/answer`, form, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       })
       .then((response) => {
-        debugger;
         setProgramFinished(true);
-      });
-  }
+      })
+    } catch (error) {
+      console.error('Error submitting data:', error);
+    }
+  };
 
   return (
     <div>
       {loading && <div className="flex justify-center">Loading..</div>}
       {!loading && (
-        <form onSubmit={(ev) => onSubmit(ev)} className="container mx-auto p-4">
+        // <form onSubmit={(ev) => onSubmit(ev)} className="container mx-auto p-4">
+        <form onSubmit={handleSubmit} className="container mx-auto p-4">
           <div className="grid grid-cols-6">
-            {/* <div className="mr-4">
-              <img src={program.image_url} alt="" />
-            </div> */}
-
             <div className="col-span-5">
               <h1 className="text-3xl mb-3">{program.title}</h1>
               <p className="text-gray-500 text-sm mb-3">
@@ -64,12 +131,12 @@ export default function ProgramPublicView() {
             </div>
           </div>
 
-          {programFinished && (
-            <div className="py-8 px-6 bg-emerald-500 text-white w-[600px] mx-auto">
+          {programFinished ? (
+            <div className="py-8 px-6 bg-emerald-500 text-white w-[600px] mt-5">
               Thank you for participating in the program
+              <br />
             </div>
-          )}
-          {!programFinished && (
+          ) : (
             <>
               <div className="my-3 bg-slate-50 p-8 rounded-lg">
                 {program.questions.map((question, index) => (
@@ -77,7 +144,9 @@ export default function ProgramPublicView() {
                     key={question.id}
                     question={question}
                     index={index}
-                    answerChanged={(val) => answerChanged(question, val)}
+                    // answerChanged={(e) => handleChange(question, e)}
+                    answerChanged={(value) => answerChanged(question, value)}
+                    // onFileChange={(event) => onFileChange(event, question)} // Pass onFileChange function down
                   />
                 ))}
               </div>

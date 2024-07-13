@@ -21,6 +21,7 @@ class ProgramQuestionResource extends JsonResource
             'question' => $this->question,
             'description' => $this->description,
             'data' => json_decode($this->data),
+            'program_id' => $this->program_id,
         ];
     }
 }

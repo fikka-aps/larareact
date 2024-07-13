@@ -23,21 +23,14 @@ export default function Login() {
           setCurrentUser(data.user);
           setUserToken(data.token);
           setUserRole(data.user.role);
-          // // Pengalihan berdasarkan peran pengguna
-          // if (data.user.role === 'admin') {
-          //   navigate('/dashboard');
-          // } else if (data.user.role === 'user') {
-          //   navigate('/home');
-          // } else {
-          //   navigate('/default'); // Jika peran tidak dikenali
-          // }
         })
         .catch((error) => {
+          setError({ __html: error.response.data.error });
           if (error.response) {
             const finalErrors = Object.values(error.response.data.errors).reduce((accum, next) => [...accum, ...next],[]);
-            setError({ __html: finalErrors.join("<br>") });
+            setError({ __html: finalErrors});
           }
-          console.error(error);
+          console.error(error.response.data.error);
         });
     };
 
