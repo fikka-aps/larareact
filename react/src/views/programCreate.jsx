@@ -108,7 +108,7 @@ function ProgramCreate() {
         title={!id ? "Create New Program" : "Update Program"}
         buttons={id &&
             <div className='flex gap-2'>
-            <TButton color='indigo' to={`/programs/answer/${program.id}`}>
+            <TButton color='indigo' to={`/admin/programs/answer/${program.id}`}>
                 <PaperAirplaneIcon className='h-4 w-4 mr-2' />
                 Program Answer
             </TButton>

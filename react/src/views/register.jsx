@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axiosClient from "../axios";
 import { useStateContext } from "../context/ContextProvider";
+import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 
 export default function Register() {
     const { setCurrentUser, setUserToken, setUserRole } = useStateContext();
@@ -175,6 +176,12 @@ export default function Register() {
               Already have an account?{' '}
               <Link to='/login' className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
                 Sign in
+              </Link>
+            </p>
+            <p className="mt-3 text-center text-sm text-gray-500 flex items-center justify-center">
+              <Link to='/' className="flex items-center space-x-1 hover:underline">
+                <ArrowLeftIcon className="h-4 w-4" />
+                <span>Back to Home</span>
               </Link>
             </p>
           </div>

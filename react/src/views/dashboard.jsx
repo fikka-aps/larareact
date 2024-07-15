@@ -116,7 +116,7 @@ function Dashboard() {
                     <div className="font-semibold">{answer.program.title}</div>
                     <small>
                       Answer Made at:
-                      <i className="font-semibold">{answer.end_date}</i>
+                      <i className="font-semibold">{answer.created_at}</i>
                     </small>
                   </a>
                 ))}

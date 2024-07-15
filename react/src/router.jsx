@@ -21,6 +21,10 @@ const router = createBrowserRouter([
         element: <DefaultLayout/>,
         children: [
             {
+                path: '',
+                element: <Navigate to='dashboard' />
+            },
+            {
                 path: 'dashboard',
                 element: <Dashboard/>
             },
@@ -46,6 +50,10 @@ const router = createBrowserRouter([
         path:'/user',
         element: <UserLayout />,
         children:[
+            {
+                path: '',
+                element: <Navigate to='home' />
+            },
             {
                 path: 'home',
                 element: <Home />

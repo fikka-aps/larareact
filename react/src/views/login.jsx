@@ -1,7 +1,8 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useStateContext } from "../context/ContextProvider";
 import { useState } from "react";
 import axiosClient from "../axios";
+import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 
 export default function Login() {
 
@@ -9,6 +10,10 @@ export default function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState({ __html: "" });
+    const location = useLocation();
+    const navigate = useNavigate();
+    const redirectPath = new URLSearchParams(location.search).get('redirect') || '/user';
+
 
     const onSubmit = (ev) => {
       ev.preventDefault();
@@ -23,6 +28,7 @@ export default function Login() {
           setCurrentUser(data.user);
           setUserToken(data.token);
           setUserRole(data.user.role);
+          navigate(redirectPath);
         })
         .catch((error) => {
           setError({ __html: error.response.data.error });
@@ -110,6 +116,12 @@ export default function Login() {
               Not a member?{' '}
               <Link to='/register' className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
                 Sign up here
+              </Link>
+            </p>
+            <p className="mt-3 text-center text-sm text-gray-500 flex items-center justify-center">
+              <Link to='/' className="flex items-center space-x-1 hover:underline">
+                <ArrowLeftIcon className="h-4 w-4" />
+                <span>Back to Home</span>
               </Link>
             </p>
           </div>
